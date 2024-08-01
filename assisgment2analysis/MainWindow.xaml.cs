@@ -1,13 +1,8 @@
-﻿using System.Text;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
 using System.Windows.Shapes;
 
 namespace assisgment2analysis
@@ -16,6 +11,7 @@ namespace assisgment2analysis
     {
         private Graph _graph;
         private SearchAlgorithms _searchAlgorithms;
+        private Dictionary<string, Point> _parishCoordinates;
 
         public MainWindow()
         {
@@ -24,6 +20,16 @@ namespace assisgment2analysis
             _searchAlgorithms = new SearchAlgorithms();
             InitializeGraph();
             InitializeParishComboBoxes();
+            InitializeParishCoordinates();
+
+            // Debugging Code to Verify Coordinates
+            foreach (var vertex in _graph.Vertices)
+            {
+                if (!_parishCoordinates.ContainsKey(vertex.Parish))
+                {
+                    MessageBox.Show($"Parish {vertex.Parish} not found in coordinates dictionary.");
+                }
+            }
         }
 
         private void InitializeGraph()
@@ -79,35 +85,56 @@ namespace assisgment2analysis
 
         private void InitializeParishComboBoxes()
         {
-                StartParishComboBox.Items.Add("Kingston");
-                StartParishComboBox.Items.Add("Saint Andrew");
-                StartParishComboBox.Items.Add("Saint Catherine");
-                StartParishComboBox.Items.Add("Clarendon");
-                StartParishComboBox.Items.Add("Manchester");
-                StartParishComboBox.Items.Add("Saint Elizabeth");
-                StartParishComboBox.Items.Add("Westmoreland");
-                StartParishComboBox.Items.Add("Hanover");
-                StartParishComboBox.Items.Add("Saint James");
-                StartParishComboBox.Items.Add("Trelawny");
-                StartParishComboBox.Items.Add("Saint Ann");
-                StartParishComboBox.Items.Add("Saint Mary");
-                StartParishComboBox.Items.Add("Portland");
-                StartParishComboBox.Items.Add("Saint Thomas");
+            StartParishComboBox.Items.Add("Kingston");
+            StartParishComboBox.Items.Add("Saint Andrew");
+            StartParishComboBox.Items.Add("Saint Catherine");
+            StartParishComboBox.Items.Add("Clarendon");
+            StartParishComboBox.Items.Add("Manchester");
+            StartParishComboBox.Items.Add("Saint Elizabeth");
+            StartParishComboBox.Items.Add("Westmoreland");
+            StartParishComboBox.Items.Add("Hanover");
+            StartParishComboBox.Items.Add("Saint James");
+            StartParishComboBox.Items.Add("Trelawny");
+            StartParishComboBox.Items.Add("Saint Ann");
+            StartParishComboBox.Items.Add("Saint Mary");
+            StartParishComboBox.Items.Add("Portland");
+            StartParishComboBox.Items.Add("Saint Thomas");
 
-                EndParishComboBox.Items.Add("Kingston");
-                EndParishComboBox.Items.Add("Saint Andrew");
-                EndParishComboBox.Items.Add("Saint Catherine");
-                EndParishComboBox.Items.Add("Clarendon");
-                EndParishComboBox.Items.Add("Manchester");
-                EndParishComboBox.Items.Add("Saint Elizabeth");
-                EndParishComboBox.Items.Add("Westmoreland");
-                EndParishComboBox.Items.Add("Hanover");
-                EndParishComboBox.Items.Add("Saint James");
-                EndParishComboBox.Items.Add("Trelawny");
-                EndParishComboBox.Items.Add("Saint Ann");
-                EndParishComboBox.Items.Add("Saint Mary");
-                EndParishComboBox.Items.Add("Portland");
-                EndParishComboBox.Items.Add("Saint Thomas");
+            EndParishComboBox.Items.Add("Kingston");
+            EndParishComboBox.Items.Add("Saint Andrew");
+            EndParishComboBox.Items.Add("Saint Catherine");
+            EndParishComboBox.Items.Add("Clarendon");
+            EndParishComboBox.Items.Add("Manchester");
+            EndParishComboBox.Items.Add("Saint Elizabeth");
+            EndParishComboBox.Items.Add("Westmoreland");
+            EndParishComboBox.Items.Add("Hanover");
+            EndParishComboBox.Items.Add("Saint James");
+            EndParishComboBox.Items.Add("Trelawny");
+            EndParishComboBox.Items.Add("Saint Ann");
+            EndParishComboBox.Items.Add("Saint Mary");
+            EndParishComboBox.Items.Add("Portland");
+            EndParishComboBox.Items.Add("Saint Thomas");
+        }
+
+        private void InitializeParishCoordinates()
+        {
+            _parishCoordinates = new Dictionary<string, Point>
+            {
+                { "Kingston", new Point(150, 300) },
+                { "Saint Andrew", new Point(170, 280) },
+                { "Saint Catherine", new Point(130, 250) },
+                { "Clarendon", new Point(90, 230) },
+                { "Manchester", new Point(70, 210) },
+                { "Saint Elizabeth", new Point(50, 190) },
+                { "Westmoreland", new Point(30, 170) },
+                { "Hanover", new Point(40, 150) },
+                { "Saint James", new Point(60, 130) },
+                { "Trelawny", new Point(80, 110) },
+                { "Saint Ann", new Point(100, 90) },
+                { "Saint Mary", new Point(120, 70) },
+                { "Portland", new Point(140, 50) },
+                { "Saint Thomas", new Point(160, 30) }
+            };
         }
 
         private void AStarButton_Click(object sender, RoutedEventArgs e)
@@ -118,6 +145,19 @@ namespace assisgment2analysis
             {
                 var startVertex = _graph.Vertices.First(v => v.Parish == startParish);
                 var endVertex = _graph.Vertices.First(v => v.Parish == endParish);
+
+                // Debugging Code to Verify Coordinates
+                if (!_parishCoordinates.ContainsKey(startVertex.Parish))
+                {
+                    MessageBox.Show($"Start Parish {startVertex.Parish} not found in coordinates dictionary.");
+                    return;
+                }
+                if (!_parishCoordinates.ContainsKey(endVertex.Parish))
+                {
+                    MessageBox.Show($"End Parish {endVertex.Parish} not found in coordinates dictionary.");
+                    return;
+                }
+
                 var path = _searchAlgorithms.AStarSearch(_graph, startVertex, endVertex);
                 VisualizePath(path);
             }
@@ -131,6 +171,19 @@ namespace assisgment2analysis
             {
                 var startVertex = _graph.Vertices.First(v => v.Parish == startParish);
                 var endVertex = _graph.Vertices.First(v => v.Parish == endParish);
+
+                // Debugging Code to Verify Coordinates
+                if (!_parishCoordinates.ContainsKey(startVertex.Parish))
+                {
+                    MessageBox.Show($"Start Parish {startVertex.Parish} not found in coordinates dictionary.");
+                    return;
+                }
+                if (!_parishCoordinates.ContainsKey(endVertex.Parish))
+                {
+                    MessageBox.Show($"End Parish {endVertex.Parish} not found in coordinates dictionary.");
+                    return;
+                }
+
                 var path = _searchAlgorithms.BestFirstSearch(_graph, startVertex, endVertex);
                 VisualizePath(path);
             }
@@ -174,6 +227,8 @@ namespace assisgment2analysis
                     };
                     GraphCanvas.Children.Add(line);
                 }
+
+                // Optionally add markers for start and end points
                 var startEllipse = new Ellipse
                 {
                     Width = 10,
@@ -196,14 +251,12 @@ namespace assisgment2analysis
 
         private double GetCanvasX(Vertex vertex)
         {
-            // Convert vertex coordinates to canvas X coordinate
-            return 0;
+            return _parishCoordinates[vertex.Parish].X;
         }
 
         private double GetCanvasY(Vertex vertex)
         {
-            // Convert vertex coordinates to canvas Y coordinate
-            return 0;
+            return _parishCoordinates[vertex.Parish].Y;
         }
     }
 }
